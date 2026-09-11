@@ -1,0 +1,71 @@
+Started by GitHub push by ll15225478665-png
+Obtained Jenkinsfile from git https://github.com/ll15225478665-png/MDM.git
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on Jenkins in /var/jenkins_home/workspace/UDM2
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Declarative: Checkout SCM)
+[Pipeline] checkout
+Selected Git installation does not exist. Using Default
+The recommended git tool is: NONE
+using credential mdm-login-cred
+ > git rev-parse --resolve-git-dir /var/jenkins_home/workspace/UDM2/.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/ll15225478665-png/MDM.git # timeout=10
+Fetching upstream changes from https://github.com/ll15225478665-png/MDM.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.47.3'
+using GIT_ASKPASS to set credentials mdm的登录账号
+ > git fetch --tags --force --progress -- https://github.com/ll15225478665-png/MDM.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/main^{commit} # timeout=10
+Checking out Revision 4fd3ce8b00b91d67cbaf2a3fa7586b8277bb128a (refs/remotes/origin/main)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 4fd3ce8b00b91d67cbaf2a3fa7586b8277bb128a # timeout=10
+Commit message: "refactor: 简化通知逻辑，仅保留 Allure 报告与邮件通知"
+ > git rev-list --no-walk acd3cdad1c3e6f50b80ca003cf9509cde7a947e1 # timeout=10
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Setup Environment (Ubuntu))
+[Pipeline] sh
++ python3 -m venv venv
+/var/jenkins_home/workspace/UDM2@tmp/durable-74f34577/script.sh.copy: 2: python3: not found
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Run Tests)
+Stage "Run Tests" skipped due to earlier failure(s)
+[Pipeline] getContext
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Publish Allure Report)
+Stage "Publish Allure Report" skipped due to earlier failure(s)
+[Pipeline] getContext
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Declarative: Post Actions)
+[Pipeline] archiveArtifacts
+Archiving artifacts
+[Pipeline] emailext
+Sending email to: lilin@abupdate.com
+SMTP connection error while sending email. Retrying once more in 10 seconds.
+SMTP connection error while sending email. Retrying once more in 10 seconds.
+Failed after second try sending email
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+ERROR: script returned exit code 127
+Finished: FAILURE
