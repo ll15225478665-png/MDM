@@ -14,8 +14,14 @@ pipeline {
                     bash -c '
                         python3 -m venv venv
                         source venv/bin/activate
-                        pip install --upgrade pip
+                        
+                        # 修复点 1: 先安装基础构建工具，防止 PyYAML 编译失败
+                        pip install --upgrade pip setuptools wheel
+                        
+                        # 安装项目依赖
                         pip install -r requirements.txt
+                        
+                        # 修复点 2: 确保在虚拟环境中执行 playwright 命令
                         playwright install chromium
                         playwright install-deps chromium
                     '
