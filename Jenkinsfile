@@ -7,12 +7,6 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
         stage('Setup Environment (Ubuntu)') {
             steps {
                 sh '''
@@ -29,7 +23,6 @@ pipeline {
 
         stage('Run Tests') {
             steps {
-                // 从 Jenkins 凭证中安全获取账号密码并注入环境变量
                 withCredentials([usernamePassword(credentialsId: 'mdm-login-cred', usernameVariable: 'MDM_USER', passwordVariable: 'MDM_PASS')]) {
                     sh '''
                         source venv/bin/activate
@@ -50,10 +43,9 @@ pipeline {
 
     post {
         always {
-            // 归档报告数据
             archiveArtifacts artifacts: '${ALLURE_RESULTS}/**/*', fingerprint: true
             
-            // 发送邮件通知
+            // 使用 Email Extension Plugin 发送富文本邮件
             emailext (
                 subject: "🧪 [MDM自动化] 构建 #${env.BUILD_NUMBER} - ${currentBuild.result}",
                 body: """
@@ -68,16 +60,6 @@ pipeline {
                 attachLog: true,
                 mimeType: 'text/html'
             )
-
-            // 发送飞书通知
-            script {
-                withCredentials([string(credentialsId: 'feishu-token', variable: 'FEISHU_TOKEN')]) {
-                    def status = currentBuild.result ?: 'SUCCESS'
-                    def color = status == 'SUCCESS' ? 'green' : 'red'
-                    def payload = """{"msg_type":"interactive","card":{"header":{"title":{"tag":"plain_text","content":"MDM 测试报告 #${env.BUILD_NUMBER}"},"template":"${color}"}}}"""
-                    sh "curl -X POST -H 'Content-Type: application/json' -d '${payload}' ${FEISHU_TOKEN}"
-                }
-            }
         }
     }
 }
