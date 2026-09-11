@@ -55,14 +55,14 @@ pipeline {
             
             // 发送邮件通知
             emailext (
-                subject: "🧪 [MDM自动化] 构建 #${BUILD_NUMBER} - ${currentBuild.result}",
+                subject: "🧪 [MDM自动化] 构建 #${env.BUILD_NUMBER} - ${currentBuild.result}",
                 body: """
                     <h3>构建摘要</h3>
                     <ul>
                         <li><strong>状态:</strong> ${currentBuild.result}</li>
                         <li><strong>耗时:</strong> ${currentBuild.durationString}</li>
                     </ul>
-                    <p>👉 <a href="${BUILD_URL}allure">点击查看详细 Allure 报告</a></p>
+                    <p>👉 <a href="${env.BUILD_URL}allure">点击查看详细 Allure 报告</a></p>
                 """,
                 recipientProviders: [[$class: 'DevelopersRecipientProvider']],
                 attachLog: true,
@@ -74,7 +74,7 @@ pipeline {
                 withCredentials([string(credentialsId: 'feishu-token', variable: 'FEISHU_TOKEN')]) {
                     def status = currentBuild.result ?: 'SUCCESS'
                     def color = status == 'SUCCESS' ? 'green' : 'red'
-                    def payload = """{"msg_type":"interactive","card":{"header":{"title":{"tag":"plain_text","content":"MDM 测试报告 #${BUILD_NUMBER}"},"template":"${color}"}}}"""
+                    def payload = """{"msg_type":"interactive","card":{"header":{"title":{"tag":"plain_text","content":"MDM 测试报告 #${env.BUILD_NUMBER}"},"template":"${color}"}}}"""
                     sh "curl -X POST -H 'Content-Type: application/json' -d '${payload}' ${FEISHU_TOKEN}"
                 }
             }
