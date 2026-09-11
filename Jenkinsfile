@@ -12,18 +12,17 @@ pipeline {
                 // 修复点 1: 使用 bash -c 来支持 source 命令
                 sh '''
                     bash -c '
-                        # 修复点 1: 安装 C/C++ 编译器，解决 greenlet 编译失败问题
-                        sudo apt-get update
-                        sudo apt-get install -y build-essential
-                        
-                        python3 -m venv venv
+                        # 修复点 1: 显式使用 python3.10 以避开 3.13 的编译坑
+                        python3.10 -m venv venv
                         source venv/bin/activate
                         
-                        # 修复点 2: 使用国内镜像源并增加超时时间
-                        pip install --upgrade pip setuptools wheel -i https://mirrors.aliyun.com/pypi/simple/ --trusted-host mirrors.aliyun.com
+                        # 修复点 2: 安装基础构建工具
+                        pip install --upgrade pip setuptools wheel
+                        
+                        # 修复点 3: 使用国内镜像源并增加超时时间
                         pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/ --trusted-host mirrors.aliyun.com --default-timeout=1000
                         
-                        # 修复点 3: 使用 Python 模块方式调用 Playwright
+                        # 修复点 4: 使用 Python 模块方式调用 Playwright
                         echo "Installing Playwright browsers via python module..."
                         python3 -m playwright install chromium
                         
