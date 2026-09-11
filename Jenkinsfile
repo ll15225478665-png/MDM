@@ -15,15 +15,16 @@ pipeline {
                         python3 -m venv venv
                         source venv/bin/activate
                         
-                        # 修复点 1: 先安装基础构建工具，防止 PyYAML 编译失败
-                        pip install --upgrade pip setuptools wheel
+                        # 1. 安装基础工具和依赖
+                        pip install --upgrade pip setuptools wheel -i https://mirrors.aliyun.com/pypi/simple/ --trusted-host mirrors.aliyun.com
+                        pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/ --trusted-host mirrors.aliyun.com --default-timeout=1000
                         
-                        # 安装项目依赖
-                        pip install -r requirements.txt
+                        # 2. 使用 Python 模块方式调用 Playwright 安装浏览器（最稳妥的方式）
+                        echo "Installing Playwright browsers via python module..."
+                        python3 -m playwright install chromium
                         
-                        # 修复点 2: 确保在虚拟环境中执行 playwright 命令
-                        playwright install chromium
-                        playwright install-deps chromium
+                        echo "Installing Playwright system deps..."
+                        python3 -m playwright install-deps chromium
                     '
                 '''
             }
